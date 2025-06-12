@@ -1,5 +1,6 @@
 package com.example.app_infounsada
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.LinearLayout
@@ -11,7 +12,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,17 +25,17 @@ class MainActivity : AppCompatActivity() {
         generateButtons()
     }
 
-
-    private fun getRetrofit():Retrofit {
+    private fun getRetrofit(): Retrofit {
         return Retrofit.Builder()
             .baseUrl("http://urlAPI/")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
 
-    private fun searchByName(query:String) {
+    private fun searchByName(query: String) {
         CoroutineScope(Dispatchers.IO).launch {
             val call = getRetrofit().create(APIService::class.java).getAllModulesByID()
+            // TODO: Usar la respuesta de la API
         }
     }
 
@@ -43,7 +43,6 @@ class MainActivity : AppCompatActivity() {
         val buttonsTexts = arrayListOf("Calendario Academico", "Becas", "Plataformas", "Tutorias")
 
         val buttonsContainer: LinearLayout = binding.buttonsContainer
-
         buttonsContainer.removeAllViews()
 
         for (text in buttonsTexts) {
@@ -51,13 +50,34 @@ class MainActivity : AppCompatActivity() {
             button.layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-
-            }
+            )
             button.text = text
+
+            // SOLO un setOnClickListener
             button.setOnClickListener {
-                Toast.makeText(this, "$text clickeado!", Toast.LENGTH_SHORT).show()
+                when (text) {
+                    "Calendario Academico" -> {
+                        val intent = Intent(this, CalendarioActivity::class.java)
+                        startActivity(intent)
+                    }
+                    "Becas" -> {
+                        val intent = Intent(this, BecasActivity::class.java)
+                        startActivity(intent)
+                    }
+                    "Plataformas" -> {
+                        val intent = Intent(this, PlataformasActivity::class.java)
+                        startActivity(intent)
+                    }
+                    "Tutorias" -> {
+                        val intent = Intent(this, TutoriasActivity::class.java)
+                        startActivity(intent)
+                    }
+                    else -> {
+                        Toast.makeText(this, "$text clickeado!", Toast.LENGTH_SHORT).show()
+                    }
+                }
             }
+
             buttonsContainer.addView(button)
         }
     }
