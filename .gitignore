@@ -13,11 +13,14 @@
 .externalNativeBuild
 .cxx
 local.properties
-# Archivos generados por Android Studio/Gradle
+# .gitignore
 .idea/
-.gradle/
-build/
-caches/
 *.lock
+caches/
+daemon/
+kotlin-profile/
+native/
+wrapper/
+build/
 *.iml
 local.properties
