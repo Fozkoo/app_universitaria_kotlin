@@ -59,11 +59,6 @@ class MainActivity : AppCompatActivity() {
 
                 binding.buttonsContainer.removeAllViews()
 
-                // Botón fijo: Calendario Académico
-                binding.buttonsContainer.addView(createButton("Calendario Académico") {
-                    startActivity(Intent(this@MainActivity, CalendarioActivity::class.java))
-                })
-
                 // Botones dinámicos
                 topics.forEach { topic ->
                     val nombre = topic.name.trim()

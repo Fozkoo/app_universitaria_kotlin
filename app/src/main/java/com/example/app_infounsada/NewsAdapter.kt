@@ -1,5 +1,7 @@
 package com.example.app_infounsada
 
+import android.annotation.SuppressLint
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,13 +30,14 @@ class NewsAdapter(private var newsList: List<NewsDTO>) :
 
     override fun onBindViewHolder(holder: NewsViewHolder, position: Int) {
         val news = newsList[position]
+
         holder.txtTitle.text = news.title
         holder.txtDescription.text = news.content
 
-        if (!news.imagePath.isNullOrBlank()) {
+        if (!news.image_path.isNullOrBlank()) {
             holder.imgNews.visibility = View.VISIBLE
             Picasso.get()
-                .load(news.imagePath)
+                .load(news.image_path)
                 .placeholder(android.R.drawable.ic_menu_report_image)
                 .error(android.R.drawable.ic_delete)
                 .into(holder.imgNews)
@@ -43,6 +46,7 @@ class NewsAdapter(private var newsList: List<NewsDTO>) :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun updateData(newList: List<NewsDTO>) {
         newsList = newList
         notifyDataSetChanged()

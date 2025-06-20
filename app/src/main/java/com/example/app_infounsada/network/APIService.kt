@@ -5,21 +5,21 @@ import com.example.app_infounsada.data.CalendarEventDTO
 import com.example.app_infounsada.data.TopicDTO
 import com.example.app_infounsada.data.NewsDTO
 import retrofit2.http.GET
-import retrofit2.http.Query
+import retrofit2.http.Path
 
 interface APIService {
-    @GET("api/module/getAllModule")
+    @GET("api/modules")
     suspend fun getAllModules(): List<ModuleDTO>
 
     @GET("api/calendar/getAll")
     suspend fun getAllCalendarEvents(): List<CalendarEventDTO>
 
-    @GET("api/topic/getAllTopic")
+    @GET("api/topics")
     suspend fun getAllTopics(): List<TopicDTO>
 
-    @GET("api/module/getByTopic")
-    suspend fun getModulesByTopic(@Query("name") topicName: String): List<ModuleDTO>
+    @GET("api/modules/topic-name/{name}")
+    suspend fun getModulesByTopic(@Path("name") topicName: String): List<ModuleDTO>
 
-    @GET("api/news/getAllNews")
+    @GET("api/news")
     suspend fun getAllNews(): List<NewsDTO>
 }

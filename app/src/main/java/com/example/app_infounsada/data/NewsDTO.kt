@@ -4,5 +4,5 @@ data class NewsDTO(
     val idnews: Long,
     val title: String,
     val content: String,
-    val imagePath: String?
+    val image_path: String?
 )
