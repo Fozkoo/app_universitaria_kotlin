@@ -3,17 +3,19 @@ package com.example.app_infounsada
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.app_infounsada.data.ModuleDTO
+import com.squareup.picasso.Picasso
 
-class ModuleAdapter(private var originalList: List<ModuleDTO>) :
+class ModuleAdapter(private var moduleList: List<ModuleDTO>) :
     RecyclerView.Adapter<ModuleAdapter.ModuleViewHolder>() {
 
-    private var filteredList: List<ModuleDTO> = originalList
-
     inner class ModuleViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        val tvModuleName: TextView = itemView.findViewById(R.id.tvModuleName)
+        val txtTitle: TextView = itemView.findViewById(R.id.txtModuleTitle)
+        val txtDescription: TextView = itemView.findViewById(R.id.txtModuleDescription)
+        val imgModule: ImageView = itemView.findViewById(R.id.imgModule)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModuleViewHolder {
@@ -22,27 +24,31 @@ class ModuleAdapter(private var originalList: List<ModuleDTO>) :
         return ModuleViewHolder(view)
     }
 
+    override fun getItemCount(): Int = moduleList.size
+
     override fun onBindViewHolder(holder: ModuleViewHolder, position: Int) {
-        val module = filteredList[position]
-        holder.tvModuleName.text = module.name
+        val module = moduleList[position]
+        holder.txtTitle.text = module.title
+        holder.txtDescription.text = module.content
+
+        if (!module.image_path.isNullOrBlank()) {
+            holder.imgModule.visibility = View.VISIBLE
+            Picasso.get().load(module.image_path).into(holder.imgModule)
+        } else {
+            holder.imgModule.visibility = View.GONE
+        }
     }
 
-    override fun getItemCount(): Int = filteredList.size
-
     fun updateData(newList: List<ModuleDTO>) {
-        originalList = newList
-        filteredList = newList
+        moduleList = newList
         notifyDataSetChanged()
     }
 
     fun filter(query: String) {
-        filteredList = if (query.isBlank()) {
-            originalList
-        } else {
-            originalList.filter {
-                it.name.contains(query, ignoreCase = true)
-            }
+        val filtered = moduleList.filter {
+            it.title.contains(query, ignoreCase = true) ||
+                    it.content.contains(query, ignoreCase = true)
         }
-        notifyDataSetChanged()
+        updateData(filtered)
     }
 }

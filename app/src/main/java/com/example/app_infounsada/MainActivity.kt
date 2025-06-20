@@ -8,64 +8,92 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.app_infounsada.data.NewsDTO
 import com.example.app_infounsada.databinding.ActivityMainBinding
 import com.example.app_infounsada.network.RetrofitClient
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var adapter: ModuleAdapter
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
+
+    private lateinit var newsAdapter: NewsAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Inicializar RecyclerView
-        adapter = ModuleAdapter(emptyList())
-        binding.recyclerModules.layoutManager = LinearLayoutManager(this)
-        binding.recyclerModules.adapter = adapter
-
-        // Listener del SearchView
-        binding.svModules.setOnQueryTextListener(object : androidx.appcompat.widget.SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean = false
-            override fun onQueryTextChange(newText: String?): Boolean {
-                adapter.filter(newText.orEmpty())
-                return true
-            }
-        })
-
-        generateButtons()
-        testApiConnection()
+        loadTopicButtons()
+        setupNewsRecycler()
+        loadNoticias()
     }
 
-    private fun testApiConnection() {
+    private fun setupNewsRecycler() {
+        newsAdapter = NewsAdapter(emptyList())
+        binding.recyclerNoticias.layoutManager = LinearLayoutManager(this)
+        binding.recyclerNoticias.adapter = newsAdapter
+    }
+
+    private fun loadNoticias() {
         coroutineScope.launch {
             try {
-                val modules = withContext(Dispatchers.IO) {
-                    RetrofitClient.instance.getAllModules()
+                val noticias: List<NewsDTO> = withContext(Dispatchers.IO) {
+                    RetrofitClient.instance.getAllNews()
                 }
-
-                adapter.updateData(modules)
-
-                modules.forEach { module ->
-                    Log.d("BACKEND_DATA", """
-                        ID: ${module.id}
-                        Nombre: ${module.name}
-                        Temas: ${module.topicos.size}
-                    """.trimIndent())
-                }
-
-                showToast("Conexión exitosa (${modules.size} módulos recibidos)")
+                newsAdapter.updateData(noticias)
             } catch (e: Exception) {
-                Log.e("API_FAIL", "Fallo la conexión: ${e.javaClass.simpleName} - ${e.message}")
-                showToast("Error al conectar con el backend")
+                Toast.makeText(this@MainActivity, "Error al cargar noticias", Toast.LENGTH_SHORT).show()
+                Log.e("NEWS_LOAD_ERROR", "Error al cargar noticias", e)
             }
+        }
+    }
+
+    private fun loadTopicButtons() {
+        coroutineScope.launch {
+            try {
+                val topics = withContext(Dispatchers.IO) {
+                    RetrofitClient.instance.getAllTopics()
+                }
+
+                binding.buttonsContainer.removeAllViews()
+
+                // Botón fijo: Calendario Académico
+                binding.buttonsContainer.addView(createButton("Calendario Académico") {
+                    startActivity(Intent(this@MainActivity, CalendarioActivity::class.java))
+                })
+
+                // Botones dinámicos
+                topics.forEach { topic ->
+                    val nombre = topic.name.trim()
+                    binding.buttonsContainer.addView(createButton(nombre) {
+                        val intent = Intent(this@MainActivity, TopicModulesActivity::class.java)
+                        intent.putExtra("topic_name", nombre)
+                        startActivity(intent)
+                    })
+                }
+
+                showToast("Tópicos cargados: ${topics.size}")
+            } catch (e: Exception) {
+                Log.e("TOPIC_LOAD_ERROR", "Error al obtener tópicos", e)
+                showToast("No se pudieron cargar los tópicos")
+            }
+        }
+    }
+
+    private fun createButton(text: String, onClick: () -> Unit): Button {
+        return Button(this).apply {
+            this.text = text
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+            ).apply {
+                setMargins(0, 0, 0, 16.dpToPx())
+            }
+            setBackgroundColor(getColor(android.R.color.holo_blue_dark))
+            setTextColor(getColor(android.R.color.white))
+            setOnClickListener { onClick() }
         }
     }
 
@@ -73,51 +101,5 @@ class MainActivity : AppCompatActivity() {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 
-    private fun generateButtons() {
-        val buttonsTexts = listOf(
-            "Calendario Academico",
-            "Becas",
-            "Plataformas",
-            "Tutorias"
-        )
-
-        binding.buttonsContainer.apply {
-            removeAllViews()
-            buttonsTexts.forEach { text ->
-                addView(createButton(text))
-            }
-        }
-    }
-
-    private fun createButton(text: String): Button {
-        return Button(this).apply {
-            layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-            ).apply {
-                setMargins(0, 0, 0, 16.dpToPx())
-            }
-
-            this.text = text
-            setOnClickListener { handleButtonClick(text) }
-            setBackgroundColor(getColor(android.R.color.holo_blue_dark))
-            setTextColor(getColor(android.R.color.white))
-        }
-    }
-
     private fun Int.dpToPx(): Int = (this * resources.displayMetrics.density).toInt()
-
-    private fun handleButtonClick(buttonText: String) {
-        val activityClass = when (buttonText) {
-            "Calendario Academico" -> CalendarioActivity::class.java
-            "Becas" -> BecasActivity::class.java
-            "Plataformas" -> PlataformasActivity::class.java
-            "Tutorias" -> TutoriasActivity::class.java
-            else -> {
-                showToast("$buttonText clickeado!")
-                return
-            }
-        }
-        startActivity(Intent(this, activityClass))
-    }
 }
