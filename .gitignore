@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+# Archivos generados por Android Studio/Gradle
+.idea/
+.gradle/
+build/
+caches/
+*.lock
+*.iml
+local.properties

@@ -34,26 +34,32 @@ android {
         jvmTarget = "11"
     }
 
-    buildFeatures{
+    buildFeatures {
         viewBinding = true
     }
 }
 
 dependencies {
-
+    // Dependencias que ya tenías (sin cambios)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.constraintlayout)
 
-    implementation("com.squareup.picasso:picasso:2.71828") //Convertir URL a Imagen
+    // Picasso (manteniendo tu versión)
+    implementation("com.squareup.picasso:picasso:2.71828")
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0") //Retrofit2 para consumir API-REST
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0") // Convertir JSON en dataclass
+    // Retrofit (sin cambios en versiones)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.6") //Corrutinas
+    // Nuevas dependencias agregadas (solo lo esencial)
+    implementation("com.squareup.okhttp3:okhttp:4.12.0") // Requerido por Retrofit
+    implementation("com.squareup.okhttp3:logging-interceptor:4.12.0") // Para debug
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4") // Versión actualizada
 
+    // Testing (sin cambios)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
