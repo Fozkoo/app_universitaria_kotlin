@@ -31,9 +31,9 @@ class ModuleAdapter(private var moduleList: List<ModuleDTO>) :
         holder.txtTitle.text = module.title
         holder.txtDescription.text = module.content
 
-        if (!module.image_path.isNullOrBlank()) {
+        if (!module.imagePath.isNullOrBlank()) {
             holder.imgModule.visibility = View.VISIBLE
-            Picasso.get().load(module.image_path).into(holder.imgModule)
+            Picasso.get().load(module.imagePath).into(holder.imgModule)
         } else {
             holder.imgModule.visibility = View.GONE
         }

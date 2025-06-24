@@ -10,7 +10,7 @@ import com.google.gson.GsonBuilder
 
 object RetrofitClient {
     // Reemplaza con tu IP local (no uses localhost)
-    private const val BASE_URL = "http://10.36.1.100:8081/"
+    private const val BASE_URL = "http://10.0.2.2:8081/"
 
     private val gson: Gson = GsonBuilder()
         .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")

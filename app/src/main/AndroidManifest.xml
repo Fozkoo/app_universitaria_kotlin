@@ -16,7 +16,6 @@
             android:networkSecurityConfig="@xml/network_security_config"
             tools:targetApi="31">
 
-        <activity android:name=".RetrofitClient" android:exported="false" />
         <activity android:name=".TutoriasActivity" android:exported="false" />
         <activity android:name=".PlataformasActivity" android:exported="false" />
         <activity android:name=".BecasActivity" android:exported="false" />

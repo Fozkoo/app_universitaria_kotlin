@@ -36,6 +36,8 @@ class MainActivity : AppCompatActivity() {
         binding.recyclerNoticias.adapter = newsAdapter
     }
 
+
+
     private fun loadNoticias() {
         coroutineScope.launch {
             try {
@@ -49,6 +51,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun loadTopicButtons() {
         coroutineScope.launch {
