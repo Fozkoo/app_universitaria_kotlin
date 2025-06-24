@@ -4,7 +4,7 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#cfbb75"
+    android:background="#ECECEC"
     tools:context=".MainActivity">
 
 
@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="34dp"
-            android:text="APP UNIVERSITARIA"
+            android:text="TU INFO UNSAdA"
             android:textSize="26sp"
             android:textStyle="bold"
             android:textColor="#000000"

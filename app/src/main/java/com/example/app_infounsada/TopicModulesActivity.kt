@@ -26,11 +26,11 @@ class TopicModulesActivity : AppCompatActivity() {
 
         // Cambiar fondo según el tópico
         when (topicName.lowercase()) {
-            "becas", "extensiones", "examenes finales" -> {
-                binding.root.setBackgroundColor(Color.parseColor("#cfbb75")) // dorado claro
+            "becas", "extensiones", "examenes finales", "tutorias" -> {
+                binding.root.setBackgroundColor(Color.parseColor("#ECECEC")) // dorado claro
             }
             else -> {
-                binding.root.setBackgroundColor(Color.WHITE)
+                binding.root.setBackgroundColor(Color.parseColor("#ECECEC"))
             }
         }
 
